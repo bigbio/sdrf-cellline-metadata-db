@@ -3,6 +3,7 @@ import pandas as pd
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+
 @click.command(
     "cell-passports-database",
     short_help="Create a database from cell passports files",
@@ -88,6 +89,7 @@ def cli():
     Main function to run the CLI
     """
     pass
+
 
 cli.add_command(cell_passports_to_database)
 

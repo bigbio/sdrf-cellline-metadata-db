@@ -9,6 +9,7 @@ from transformers import pipeline
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+
 @click.command(
     "mistral-recommendation",
     short_help="Looks for cell lines in cellosaurus using Mixtral LLM because the name do not match the cellosaurus name",
@@ -40,7 +41,9 @@ def mistral_recommendation(unknown: str, output: str) -> None:
         return response[0]["generated_text"].strip()
 
     # Generate cell line names and store them in a dictionary
-    cell_line_names = {cell_line: get_cell_line_name(cell_line) for cell_line in unknown_cl}
+    cell_line_names = {
+        cell_line: get_cell_line_name(cell_line) for cell_line in unknown_cl
+    }
 
     # Write the results to the output file
     with open(output, "w") as file:
