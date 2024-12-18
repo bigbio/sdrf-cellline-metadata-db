@@ -1,11 +1,38 @@
-import re
+from typing import Dict, List
 
 import click
 import pandas as pd
 import os
-
+from sklearn.metrics.pairwise import cosine_similarity
 import logging
+import spacy
+
 logging.basicConfig(level=logging.DEBUG)
+
+nlp = spacy.load("en_core_web_md")  # Load the spacy model
+
+
+def calculate_similarity(query_term, synonyms):
+    query_vec = nlp(" ".join(query_term)).vector
+    synonyms_vec = [nlp(" ".join(synonym)).vector for synonym in synonyms]
+    similarities = cosine_similarity([query_vec], synonyms_vec)
+    return max(similarities[0])
+
+def map_celllines(cellline_query: str, all_celllines: Dict[str, str]) -> str:
+    # Use the LLM to find the correct MONDO term
+    max_similarity = 0
+    closest_match = None
+    for entry, synonyms in all_celllines.items():
+        if synonyms is None:
+            synonyms = []
+        else:
+            synonyms = [synonym.strip() for synonym in synonyms.split(";")]
+        synonyms.append(entry)  # Add the cell line name as a synonym
+        similarity = calculate_similarity(cellline_query, synonyms)
+        if similarity > max_similarity:
+            closest_match = entry
+            max_similarity = similarity
+    return (closest_match, max_similarity)
 
 @click.command()
 @click.option('--sdrf-file', required=True, type=click.Path(exists=True), help='Path to the SDRF file.')
@@ -48,6 +75,7 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
 
         # Prepare the output data
         output_data = []
+        unknown_cell_lines = []
 
         click.echo("Annotating SDRF file...")
         for _, row in sdrf_data.iterrows():
@@ -116,6 +144,7 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
                     "cell type": "not available",
                     "material type": "not available",
                 })
+                unknown_cell_lines.append(cell_line_name)
                 logging.warning(f"No match found for cell line: {cell_line_name}")
 
         # Convert output data to DataFrame
@@ -124,6 +153,21 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
         # Save to output file
         click.echo(f"Saving annotated data to: {output_file}")
         output_df.to_csv(output_file, sep="\t", index=False)
+
+        # Log unknown cell lines
+        if unknown_cell_lines:
+            # Only log unique unknown cell lines
+            unknown_cell_lines = list(set(unknown_cell_lines))
+            logging.warning(f"Unknown cell lines: {', '.join(unknown_cell_lines)}")
+
+            # check using NLP if the unknown cell lines can be matched
+            cell_lines_db = cellline_db[['cell line', 'synonyms']].set_index('cell line').to_dict()['synonyms']
+            for cell_line in unknown_cell_lines:
+                (match, score) = map_celllines(cell_line, cell_lines_db)
+                if match and score > 0.9:
+                    logging.info(f"Match found for cell line: {cell_line} - {match}")
+                else:
+                    logging.warning(f"No match found for cell line: {cell_line}")
 
         click.echo("Annotation complete.")
 

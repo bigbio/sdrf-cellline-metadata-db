@@ -110,3 +110,7 @@ To use the scripts, ensure the following are installed:
 
 - **Python 3.x**
 - Required libraries:  
+- `pandas`
+- `numpy`
+- `spacy`
+- install the `en_core_web_sm` model for spaCy: `python -m spacy download en_core_web_sm`
