@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 @click.option('--output-file', required=True, type=click.Path(), help='Path to the output TSV file.')
 def annotate_sdrf(sdrf_file, db_file, output_file):
     """
-    Output the columns needed to annotaed an SDRF file with cell line information from a database.
+    Output the columns needed to annotate an SDRF file with cell line information from a database.
 
     This command-line tool reads an SDRF file and a cell line database file,
     matches cell line information, and outputs an annotated TSV file. It ensures
