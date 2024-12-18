@@ -13,6 +13,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 nlp = spacy.load("en_core_web_md")  # Load the spacy model
 
+
 def string_if_not_empty(param: list) -> Union[None, str]:
     """
     Return a string if the list is not empty
@@ -33,6 +34,7 @@ def string_if_not_empty(param: list) -> Union[None, str]:
         return "; ".join(l)
     return "no available"
 
+
 def get_cell_line_code(sdrf_file):
     """
     Extracts a list of unique cell line codes from an SDRF file.
@@ -52,8 +54,13 @@ def get_cell_line_code(sdrf_file):
         cl_list = sdrf["characteristics[cell line]"].unique().tolist()
         return cl_list
     except KeyError:
-        print("The SDRF file does not have a column named 'characteristics[cell line]' -- {}".format(sdrf_file))
+        print(
+            "The SDRF file does not have a column named 'characteristics[cell line]' -- {}".format(
+                sdrf_file
+            )
+        )
     return None
+
 
 def modo_dict_to_context(obo_list: list) -> str:
     context = ""
@@ -179,6 +186,7 @@ def get_cell_line_bto(bto_code: str, bto_list: list):
         if entry["id"] == bto_code:
             return entry
     return None
+
 
 def validate_ages_as_sdrf(age_string: str) -> bool:
     """
@@ -343,13 +351,17 @@ def create_new_entry(
         and cell_passport_entry["sampling site"].lower() != "no available"
         and cell_passport_entry["sampling site"].lower() != "unknown"
     ):
-        entry["sampling site"][0] = cell_passport_entry["sampling site"].strip().capitalize()
+        entry["sampling site"][0] = (
+            cell_passport_entry["sampling site"].strip().capitalize()
+        )
     if (
         cellosaurus_entry is not None
         and cellosaurus_entry["sampling site"].lower() != "no available"
         and cellosaurus_entry["sampling site"].lower() != "unknown"
     ):
-        entry["sampling site"][1] = cellosaurus_entry["sampling site"].strip().capitalize()
+        entry["sampling site"][1] = (
+            cellosaurus_entry["sampling site"].strip().capitalize()
+        )
 
     if (
         cell_passport_entry is not None
@@ -434,7 +446,9 @@ def create_new_entry(
         cellosaurus_entry is not None
         and "available" not in cellosaurus_entry["developmental stage"].lower()
     ):
-        entry["developmental stage"] = cellosaurus_entry["developmental stage"].capitalize()
+        entry["developmental stage"] = cellosaurus_entry[
+            "developmental stage"
+        ].capitalize()
     elif entry["age"] != "no available":
         entry["developmental stage"] = estimate_developmental_stage(entry["age"])
 
@@ -444,6 +458,7 @@ def create_new_entry(
     entry["curated"] = "not curated"
     return entry
 
+
 def write_database(current_cl_database: list, database: str) -> None:
     """
     Write the database objects to the database file
@@ -451,7 +466,8 @@ def write_database(current_cl_database: list, database: str) -> None:
     :param database: database file path
     :return:
     """
-    def get_string_available(list_values: list)-> str:
+
+    def get_string_available(list_values: list) -> str:
 
         # split some of the words in the list by , and add the list to the values
         list_values = [value.split(",") for value in list_values]
@@ -459,7 +475,9 @@ def write_database(current_cl_database: list, database: str) -> None:
         # remove duplicates
         list_values = list(set(list_values))
         # remove the no available values from list
-        list_values = [value.capitalize() for value in list_values if value != "no available"]
+        list_values = [
+            value.capitalize() for value in list_values if value != "no available"
+        ]
         if not list_values:
             return "no available"
         return "; ".join(list_values)
@@ -494,12 +512,16 @@ def write_database(current_cl_database: list, database: str) -> None:
                 entry.get("bto cell line", "no available"),
                 entry.get("organism", "no available"),
                 entry.get("organism part", "no available"),
-                get_string_available(entry.get("sampling site", ["no available", "no available"])),
+                get_string_available(
+                    entry.get("sampling site", ["no available", "no available"])
+                ),
                 entry.get("age", "no available"),
                 entry.get("developmental stage", "no available"),
                 entry.get("sex", "no available"),
                 entry.get("ancestry category", "no available"),
-                get_string_available(entry.get("disease", ["no available", "no available"])),
+                get_string_available(
+                    entry.get("disease", ["no available", "no available"])
+                ),
                 entry.get("cell type", "no available"),
                 entry.get("Material type", "no available"),
                 string_if_not_empty(entry.get("synonyms", [])),
@@ -508,6 +530,7 @@ def write_database(current_cl_database: list, database: str) -> None:
 
             row = ["no available" if item is None else str(item) for item in row]
             file.write("\t".join(row) + "\n")
+
 
 @click.command(
     "cl-database",
@@ -546,6 +569,7 @@ def write_database(current_cl_database: list, database: str) -> None:
     required=False,
     type=click.Path(exists=True),
 )
+@click.option("--celllines-to-add", help="Cell lines to add", required=False)
 @click.option(
     "--include-all-cellpassports",
     help="Include all cell passports cell lines",
@@ -567,6 +591,7 @@ def cl_database(
     ea_database: str,
     cell_passports_database: str,
     sdrf_path: str,
+    celllines_to_add: str,
     include_all_cellpassports: bool,
     ai_synonyms: str,
     unknown: str,
@@ -643,7 +668,9 @@ def cl_database(
     if ai_synonyms is not None:
         ai_synonyms_dic = pandas.read_csv(ai_synonyms, sep="\t", header=0, dtype=str)
         ai_synonyms_dic = ai_synonyms_dic.to_dict(orient="records")
-        ai_synonyms_dic = [{k: str(v) for k, v in record.items()} for record in ai_synonyms_dic]
+        ai_synonyms_dic = [
+            {k: str(v) for k, v in record.items()} for record in ai_synonyms_dic
+        ]
         ai_synonyms_dic = {entry["cell line"]: entry for entry in ai_synonyms_dic}
 
     def find_cell_line_cellosaurus(cl: str, cellosaurus: dict) -> Union[dict, None]:
@@ -777,12 +804,14 @@ def cl_database(
         for cl in non_found_cl:
             file.write(cl + "\n")
 
+
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     """
     Main function to run the CLI
     """
     pass
+
 
 cli.add_command(cl_database)
 

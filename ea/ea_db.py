@@ -7,6 +7,7 @@ import pandas as pd
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+
 def string_if_not_empty(param: list) -> Union[None, str]:
     """
     Return a string if the list is not empty
@@ -262,12 +263,14 @@ def ea_create_database(ea_folder: str, ea_cl_catalog: str, output: str) -> None:
             # Write the row
             file.write("\t".join(row) + "\n")
 
+
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     """
     Main function to run the CLI
     """
     pass
+
 
 cli.add_command(ea_create_database)
 

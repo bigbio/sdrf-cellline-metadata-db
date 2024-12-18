@@ -6,6 +6,7 @@ import numpy as np
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+
 def read_obo_file(file_path: str) -> Dict[str, dict]:
     """
     Reads an OBO file and returns a dictionary with the parsed content.
@@ -34,7 +35,9 @@ def read_obo_file(file_path: str) -> Dict[str, dict]:
             elif line.startswith("is_a:"):
                 obo_dict.setdefault("is_a", []).append(line.split("is_a: ")[1].strip())
             elif line.startswith("synonym:"):
-                obo_dict.setdefault("synonyms", []).append(line.split("synonym: ")[1].strip())
+                obo_dict.setdefault("synonyms", []).append(
+                    line.split("synonym: ")[1].strip()
+                )
                 obo_dict["synonyms"] = [
                     synonym.replace("RELATED []", "")
                     .replace("RELATED MS []", "")
@@ -51,6 +54,7 @@ def read_obo_file(file_path: str) -> Dict[str, dict]:
         if entry.strip() and "id:" in entry
     }
 
+
 def string_if_not_empty(param: List[Union[str, float]]) -> str:
     """
     Returns a string if the list is not empty, otherwise returns 'no available'.
@@ -65,11 +69,14 @@ def string_if_not_empty(param: List[Union[str, float]]) -> str:
         param = []
     if param:
         l = [
-            x for x in param
-            if (isinstance(x, float) and not np.isnan(x)) or (not isinstance(x, float) and x is not None)
+            x
+            for x in param
+            if (isinstance(x, float) and not np.isnan(x))
+            or (not isinstance(x, float) and x is not None)
         ]
         return "; ".join(l)
     return "no available"
+
 
 def write_database_cellosaurus(current_cl_database: List[dict], database: str) -> None:
     """
@@ -80,18 +87,28 @@ def write_database_cellosaurus(current_cl_database: List[dict], database: str) -
         database (str): Path to the database file.
     """
     headers = [
-        "cellosaurus name", "cellosaurus accession", "bto cell line", "organism",
-        "age", "developmental stage", "sex", "ancestry category", "disease",
-        "cell type", "sampling site", "synonyms"
+        "cellosaurus name",
+        "cellosaurus accession",
+        "bto cell line",
+        "organism",
+        "age",
+        "developmental stage",
+        "sex",
+        "ancestry category",
+        "disease",
+        "cell type",
+        "sampling site",
+        "synonyms",
     ]
 
     with open(database, "w") as file:
         file.write("\t".join(headers) + "\n")
         for entry in current_cl_database:
-            row = [
-                entry.get(header, "no available") for header in headers[:-1]
-            ] + [string_if_not_empty(entry.get("synonyms", []))]
+            row = [entry.get(header, "no available") for header in headers[:-1]] + [
+                string_if_not_empty(entry.get("synonyms", []))
+            ]
             file.write("\t".join(row) + "\n")
+
 
 def is_age_in_text(age_text: str) -> bool:
     """
@@ -104,6 +121,7 @@ def is_age_in_text(age_text: str) -> bool:
         bool: True if the age is a number, False otherwise.
     """
     return any(char.isdigit() for char in age_text)
+
 
 def get_sampling_site(cellosaurus_comment: str) -> Optional[str]:
     """
@@ -119,6 +137,7 @@ def get_sampling_site(cellosaurus_comment: str) -> Optional[str]:
     match = re.search(pattern, cellosaurus_comment)
     return match.group(2) if match else None
 
+
 def get_cell_type(cellosaurus_comment: str) -> Optional[str]:
     """
     Extracts the cell type from the Cellosaurus comment field.
@@ -133,7 +152,10 @@ def get_cell_type(cellosaurus_comment: str) -> Optional[str]:
     match = re.search(pattern, cellosaurus_comment)
     return match.group(2).replace("_", ":").strip() if match else None
 
-def parse_cellosaurus_taxonomy(organism_text: str) -> Tuple[Optional[str], Optional[str]]:
+
+def parse_cellosaurus_taxonomy(
+    organism_text: str,
+) -> Tuple[Optional[str], Optional[str]]:
     """
     Parses the organism text from the Cellosaurus database.
 
@@ -147,7 +169,10 @@ def parse_cellosaurus_taxonomy(organism_text: str) -> Tuple[Optional[str], Optio
     match = re.search(pattern, organism_text)
     return (match.group(2), match.group(1)) if match else (None, None)
 
-def parse_cellosaurus_file(file_path: str, bto: Dict[str, dict], cl_type: Dict[str, dict]) -> List[dict]:
+
+def parse_cellosaurus_file(
+    file_path: str, bto: Dict[str, dict], cl_type: Dict[str, dict]
+) -> List[dict]:
     """
     Parses the CelloSaurus file and returns a list of dictionaries with the parsed content.
 
@@ -159,6 +184,7 @@ def parse_cellosaurus_file(file_path: str, bto: Dict[str, dict], cl_type: Dict[s
     Returns:
         List[dict]: List of CelloSaurus dictionaries.
     """
+
     def parse_entry(entry: str, bto: Dict[str, dict], cl_type: Dict[str, dict]) -> dict:
         data = {
             "cellosaurus name": "no available",
@@ -220,8 +246,11 @@ def parse_cellosaurus_file(file_path: str, bto: Dict[str, dict], cl_type: Dict[s
         content = file.read().decode("utf-8")
 
     entries = content.split("//\n")
-    parsed_data = [parse_entry(entry, bto, cl_type) for entry in entries if entry.strip()]
+    parsed_data = [
+        parse_entry(entry, bto, cl_type) for entry in entries if entry.strip()
+    ]
     return [entry for entry in parsed_data if entry]
+
 
 def create_new_entry_from_cellosaurus(cellosaurus: dict) -> dict:
     """
@@ -256,6 +285,7 @@ def create_new_entry_from_cellosaurus(cellosaurus: dict) -> dict:
             entry["developmental stage"] = cellosaurus["age"]
 
     return entry
+
 
 @click.command(
     "cellosaurus-database",
@@ -299,14 +329,18 @@ def cellosaurus_db(
     if filter_species:
         filter_species_list = filter_species.split(",")
         cellosaurus_list = [
-            entry for entry in cellosaurus_list if entry["organism"] in filter_species_list
+            entry
+            for entry in cellosaurus_list
+            if entry["organism"] in filter_species_list
         ]
 
     current_cl_database = [
-        create_new_entry_from_cellosaurus(cellosaurus_cl) for cellosaurus_cl in cellosaurus_list
+        create_new_entry_from_cellosaurus(cellosaurus_cl)
+        for cellosaurus_cl in cellosaurus_list
     ]
 
     write_database_cellosaurus(current_cl_database, output)
+
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
@@ -314,6 +348,7 @@ def cli():
     Main function to run the CLI.
     """
     pass
+
 
 cli.add_command(cellosaurus_db)
 
