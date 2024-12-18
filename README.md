@@ -2,7 +2,7 @@
 
 This repository provides tools to create and manage a **cell line metadata database** for annotating SDRFs (Sample and Data Relationship Format) in proteomics studies. The primary use case is enhancing annotation consistency for [quantms.org](https://quantms.org) datasets. The scripts integrate multiple ontologies and **natural language processing (NLP)** methods to standardize cell line metadata.
 
-You can query the database for cell line metadata, including information on the organism, tissue, disease, and other relevant fields [in GitHub](https://github.com/bigbio/sdrf-utils/blob/main/sdrf-cls/cl-annotations-db.tsv). The database is designed to be easily extensible and can be updated with new cell line information.
+You can query the database for cell line metadata, including information on the organism, tissue, disease, and other relevant fields [in GitHub](https://github.com/bigbio/sdrf-cellline-metadata-db/blob/main/cl-annotations-db.tsv). The database is designed to be easily extensible and can be updated with new cell line information.
 
 ---
 
