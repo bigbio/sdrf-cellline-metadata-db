@@ -1,3 +1,5 @@
+import re
+
 import click
 import pandas as pd
 import os
@@ -56,16 +58,29 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
             match = cellline_db[
                 (cellline_db['cell line'].str.lower() == str(cell_line_name).lower()) |
                 (cellline_db['cellosaurus name'].str.lower() == str(cell_line_name).lower()) |
-                (cellline_db['cellosaurus accession'].str.lower() == str(cell_line_name).lower()) |
-                (cellline_db['synonyms'].str.contains(str(cell_line_name), case=False, na=False))
+                (cellline_db['cellosaurus accession'].str.lower() == str(cell_line_name).lower())
                 ]
+
+            if match.empty:
+                # Split synonyms by semicolon, strip whitespaces, and check each synonym
+                for idx, row in cellline_db.iterrows():
+                    synonyms = row['synonyms']  # Get the synonyms for the current row
+                    if pd.notna(synonyms):  # Only proceed if synonyms are not NaN
+                        synonyms_list = [synonym.strip() for synonym in synonyms.split(';')]
+                        # Check if any synonym matches the cell line name
+                        for synonym in synonyms_list:
+                            if cell_line_name.lower() in synonym.lower():
+                                match = pd.DataFrame([row])  # Create a match
+                                break  # Stop searching once a match is found
+                    if not match.empty:  # If match found, break the loop
+                        break
 
             if not match.empty:
                 # Add the first match to the output
                 db_row = match.iloc[0]
                 output_data.append({
                     "source name": source_name,
-                    "characteristics[cell line]": cell_line_name['cell line'],
+                    "characteristics[cell line]": cell_line_name,
                     "cell line": db_row['cell line'],
                     "cellosaurus name": db_row['cellosaurus name'],
                     "cellosaurus accession": db_row['cellosaurus accession'],
@@ -79,13 +94,13 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
                     "ancestry category": db_row['ancestry category'],
                     "disease": db_row['disease'],
                     "cell type": db_row['cell type'],
-                    "material type": db_row['material type'],
+                    "material type": db_row['Material type'],
                 })
             else:
                 # No match found
                 output_data.append({
                     "source name": source_name,
-                    "characteristics[cell line]": cell_line_name['cell line'],
+                    "characteristics[cell line]": cell_line_name,
                     "cell line": "not available",
                     "cellosaurus name": "not available",
                     "cellosaurus accession": "not available",
