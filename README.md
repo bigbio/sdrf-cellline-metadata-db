@@ -104,6 +104,21 @@ The database is implemented using **SQLite** and contains the following key fiel
 
 ---
 
+## SDRF Cell Line Annotator
+
+This script annotates the cell lines from an SDRF (Sample to Data relationship format) with cell line information from a provided [cell line metadata database](cl-annotations-db.tsv). It matches cell line names from the SDRF with entries in the database, considering exact matches for cell line, cellosaurus name, and cellosaurus accession, as well as partial matches against synonyms. If a match is found, the corresponding metadata (e.g., organism, disease, age, and more) is provided. If no match is found, the fields are populated with "not available" and a warning is logged.
+
+```bash
+python annotator.py --sdrf-file MSV000085836.sdrf.tsv --db-file cl-annotations-db.tsv --output-file suggested-terms.tsv
+```
+
+### Key Features:
+
+- **Database Matching**: Matches cell line names from the SDRF file against a cell line database with multiple matching criteria (exact and synonym-based).
+- **Synonym Handling**: Synonyms in the database are split by semicolon and compared to the cell line names, ensuring flexible matching.
+- **Logging and Error Handling**: Warnings are logged for any unmatched cell lines, and errors are gracefully handled.
+- **TSV Output**: Annotates and outputs the results to a new TSV file, maintaining structured data for downstream analysis.
+
 ## Requirements
 
 To use the scripts, ensure the following are installed:
