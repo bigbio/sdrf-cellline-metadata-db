@@ -569,7 +569,7 @@ def write_database(current_cl_database: list, database: str) -> None:
     required=False,
     type=click.Path(exists=True),
 )
-@click.option("--celllines-to-add", help="Cell lines to add", required=False)
+@click.option("--celllines-to-add", help="Cell lines to add separated by ; (eg. 'Hela;KMRC-1')", required=False)
 @click.option(
     "--include-all-cellpassports",
     help="Include all cell passports cell lines",
