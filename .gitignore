@@ -173,3 +173,5 @@ cython_debug/
 */*/results.json
 */*/*/*.png
 PXD*
+/reannotate_sdrf.ipynb
+/cellosaurus/cellosaurus.txt
