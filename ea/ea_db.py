@@ -7,7 +7,6 @@ import pandas as pd
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
-
 def string_if_not_empty(param: list) -> Union[None, str]:
     """
     Return a string if the list is not empty
