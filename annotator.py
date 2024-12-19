@@ -287,7 +287,7 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
                     {
                         "source name": source_name,
                         "characteristics[cell line]": cell_line_name,
-                        "cell line": "not available",
+                        "cell line": cell_line_name,
                         "cellosaurus name": "not available",
                         "cellosaurus accession": "not available",
                         "bto cell line": "not available",
