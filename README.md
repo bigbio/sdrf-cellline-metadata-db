@@ -30,14 +30,14 @@ Cell lines are essential in biological research but often lack standardized meta
 
 ---
 
-## Metadata Sources
+## Cell line metadata sources
 
 We integrate metadata from **three main sources** and additional curation efforts:
 
 1. **[Cellosaurus](https://web.expasy.org/cellosaurus/):**  
    The primary metadata source.  
    - Download: [cellosaurus.txt](https://ftp.expasy.org/databases/cellosaurus/cellosaurus.txt)  
-   - Script: [`cellosaurus_db.py`](cellosaurus/cellosaurus_db.py) extracts relevant fields.  
+   - Script: [`cellosaurus_db.py`](cellosaurus/cellosaurus_db.py) extracts relevant fields and transform some of the cellosaurus fields to SDRF compatible format. 
 
 2. **[Cell Model Passports](https://cog.sanger.ac.uk/cmp):**  
    A collection of cell lines from various sources.  
@@ -56,7 +56,7 @@ We integrate metadata from **three main sources** and additional curation effort
 
 ---
 
-## Ontologies
+### Ontologies
 
 The following ontologies are used for annotation:
 
@@ -70,26 +70,26 @@ The following ontologies are used for annotation:
 
 ## Database Structure
 
-The database is implemented using **SQLite** and contains the following key fields:
+The database is implemented using **tsv** and contains the following key fields:
 
-| Field Name              | Description                                                                 |
-|-------------------------|-----------------------------------------------------------------------------|
-| **cell line**           | Cell line name (curated: AI or manual).                                     |
-| **cellosaurus name**    | Name as annotated in Cellosaurus `ID`.                                      |
-| **cellosaurus accession** | Accession ID from Cellosaurus `AC`.                                       |
-| **bto cell line**       | Name as annotated in BTO.                                                   |
-| **organism**            | Organism species (from Cellosaurus).                                        |
-| **organism part**       | Annotated from supplementary sources.                                       |
-| **sampling site**       | Sampling site of the cell line.                                             |
-| **age**                 | Age of the cell line (from Cellosaurus or additional sources).              |
-| **developmental stage** | Developmental stage (inferred from age if missing).                        |
-| **sex**                 | Sex information (from Cellosaurus).                                         |
-| **ancestry category**   | Ancestry classification (from Cellosaurus or supplementary sources).        |
-| **disease**             | Agreed-upon disease annotation across sources.                             |
-| **cell type**           | Agreed-upon cell type annotation across sources.                           |
-| **material type**       | Agreed-upon material classification.                                       |
-| **synonyms**            | Consolidated synonyms and accessions from all sources.                     |
-| **curated**             | Curation status: `_not curated_`, `_AI curated_`, or `_manual curated_`.    |
+| Field Name                | Description                                                    |
+|---------------------------|----------------------------------------------------------------|
+| **cell line**             | Cell line code                                                 |
+| **cellosaurus name**      | Name as annotated in Cellosaurus `ID`.                         |
+| **cellosaurus accession** | Accession ID from Cellosaurus `AC`.                            |
+| **bto cell line**         | Name as annotated in BTO.                                      |
+| **organism**              | Organism species (from Cellosaurus).                           |
+| **organism part**         | Annotated from supplementary sources.                          |
+| **sampling site**         | Sampling site of the cell line.                                |
+| **age**                   | Age of the cell line (from Cellosaurus or additional sources). |
+| **developmental stage**   | Developmental stage (inferred from age if missing).            |
+| **sex**                   | Sex information (from Cellosaurus).                            |
+| **ancestry category**     | Ancestry classification (from Cellosaurus or supplementary sources). |
+| **disease**               | Agreed-upon disease annotation across sources.                 |
+| **cell type**             | Agreed-upon cell type annotation across sources.               |
+| **material type**         | Agreed-upon material classification.                           |
+| **synonyms**              | Consolidated synonyms and accessions from all sources.         |
+| **curated**               | Curation status: `_not curated_`, `_AI curated_`, or `_manual curated_`. |
 
 > **Note**: The final database is provided as a **tab-delimited file** for easy integration. It can be loaded into tools like **Pandas** or viewed directly via GitHub's table renderer.
 
@@ -104,13 +104,30 @@ The database is implemented using **SQLite** and contains the following key fiel
 
 ---
 
+## SDRF Cell Line Annotator
+
+This script annotates the cell lines from an SDRF (Sample to Data relationship format) with cell line information from a provided [cell line metadata database](cl-annotations-db.tsv). It matches cell line names from the SDRF with entries in the database, considering exact matches for cell line, cellosaurus name, and cellosaurus accession, as well as partial matches against synonyms. If a match is found, the corresponding metadata (e.g., organism, disease, age, and more) is provided. If no match is found, the fields are populated with "not available" and a warning is logged.
+
+```bash
+python annotator.py --sdrf-file MSV000085836.sdrf.tsv --db-file cl-annotations-db.tsv --output-file suggested-terms.tsv
+```
+
+### Key Features:
+
+- **Database Matching**: Matches cell line names from the SDRF file against a cell line database with multiple matching criteria (exact and synonym-based).
+- **Synonym Handling**: Synonyms in the database are split by semicolon and compared to the cell line names, ensuring flexible matching.
+- **Logging and Error Handling**: Warnings are logged for any unmatched cell lines, and errors are gracefully handled.
+- **TSV Output**: Annotates and outputs the results to a new TSV file, maintaining structured data for downstream analysis.
+
+---
+
 ## Requirements
 
-To use the scripts, ensure the following are installed:
+To use the scripts, ensure the following is installed:
 
 - **Python 3.x**
 - Required libraries:  
 - `pandas`
 - `numpy`
 - `spacy`
-- install the `en_core_web_sm` model for spaCy: `python -m spacy download en_core_web_sm`
+- install the `en_core_web_lg` model for spaCy: `python -m spacy download en_core_web_sm`

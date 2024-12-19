@@ -1,40 +1,160 @@
-from typing import Dict, List
+import difflib
+import logging
+import re
+from functools import lru_cache
+from typing import Optional
 
 import click
 import pandas as pd
-import os
-from sklearn.metrics.pairwise import cosine_similarity
-import logging
+
+logging.basicConfig(level=logging.INFO)
 import spacy
-
-logging.basicConfig(level=logging.DEBUG)
-
-nlp = spacy.load("en_core_web_md")  # Load the spacy model
+from typing import Dict, List, Tuple
+from sklearn.metrics.pairwise import cosine_similarity
 
 
-def calculate_similarity(query_term, synonyms):
-    query_vec = nlp(" ".join(query_term)).vector
-    synonyms_vec = [nlp(" ".join(synonym)).vector for synonym in synonyms]
-    similarities = cosine_similarity([query_vec], synonyms_vec)
-    return max(similarities[0])
+class CellLineMatcher:
+    def __init__(
+        self,
+        model_name: str = "en_core_web_lg",
+        threshold: float = 0.95,
+        top_results: int = 5,
+        similarity_method: str = "cosine",
+        log_level: int = logging.INFO,
+    ):
+        """
+        Advanced Cell Line Matcher with configurable NLP matching.
 
+        :param model_name: SpaCy language model to use
+        :param threshold: Minimum similarity threshold for matches
+        :param top_results: Maximum number of results to return
+        :param log_level: Logging level for the matcher
+        """
+        # Configure logging
+        logging.basicConfig(
+            level=log_level,
+            format="%(asctime)s - %(name)s - %(levelName)s - %(message)s",
+        )
+        self.logger = logging.getLogger(self.__class__.__name__)
 
-def map_celllines(cellline_query: str, all_celllines: Dict[str, str]) -> str:
-    # Use the LLM to find the correct MONDO term
-    max_similarity = 0
-    closest_match = None
-    for entry, synonyms in all_celllines.items():
-        if synonyms is None:
-            synonyms = []
+        # Load SpaCy model with robust error handling
+        try:
+            self.nlp = spacy.load(model_name)
+            self.logger.info(f"Loaded SpaCy model: {model_name}")
+        except OSError:
+            self.logger.error(f"Model {model_name} not found")
+            raise ValueError(
+                f"SpaCy model {model_name} not found. "
+                "Please download it using 'python -m spacy download <model_name>'"
+            )
+
+        # Configuration parameters
+        self.threshold = threshold
+        self.top_results = top_results
+        self.similarity_method = similarity_method
+
+    @lru_cache(maxsize=1000)
+    def _preprocess_text(self, text: str) -> str:
+        """
+        Cached text preprocessing method.
+
+        :param text: Input text to preprocess
+        :return: Preprocessed text
+        """
+        return text.strip().lower()
+
+    def _normalize_cellline_name(self, name: str) -> str:
+        """
+        Normalize cell line name for consistent matching.
+
+        :param name: Original cell line name
+        :return: Normalized name
+        """
+        # Remove spaces, convert to uppercase
+        return re.sub(r"\s+", "", name.upper())
+
+    def calculate_similarity(self, query_term: str, synonyms: List[str]) -> float:
+        """
+        Advanced similarity calculation with multiple strategies.
+
+        :param query_term: Term to match
+        :param synonyms: List of synonyms to compare
+        :return: Maximum similarity score
+        """
+        # Preprocess inputs
+        query_term = self._preprocess_text(query_term)
+        synonyms = [self._preprocess_text(syn) for syn in synonyms]
+        if self.similarity_method == "cosine":
+            query_vec = self.nlp(" ".join(query_term)).vector
+            synonyms_vec = [self.nlp(" ".join(synonym)).vector for synonym in synonyms]
+            similarities = cosine_similarity([query_vec], synonyms_vec)
+            return max(similarities[0])
         else:
-            synonyms = [synonym.strip() for synonym in synonyms.split(";")]
-        synonyms.append(entry)  # Add the cell line name as a synonym
-        similarity = calculate_similarity(cellline_query, synonyms)
-        if similarity > max_similarity:
-            closest_match = entry
-            max_similarity = similarity
-    return (closest_match, max_similarity)
+            logging.error(f"Unknown similarity method: {self.similarity_method}")
+            raise ValueError(f"Unknown similarity method: {self.similarity_method}")
 
+    def map_celllines(
+        self, cellline_query: str, all_celllines: Dict[str, Optional[str]]
+    ) -> List[Tuple[str, float]]:
+        """
+        Map cell line query to most similar entries.
+
+        :param cellline_query: Cell line to match
+        :param all_celllines: Dictionary of cell lines and synonyms
+        :return: Sorted list of matches with similarity scores
+        """
+        # Validate inputs
+        if not cellline_query or not all_celllines:
+            self.logger.warning("Empty query or cell lines dictionary")
+            return []
+
+        results = []
+
+        for entry, synonyms in all_celllines.items():
+            # Prepare synonym list
+            if synonyms is None:
+                synonyms = []
+            else:
+                synonyms = [synonym.strip() for synonym in synonyms.split(";")]
+
+            # Always include the entry itself as a synonym
+            synonyms.append(entry)
+
+            # Calculate similarity
+            similarity = self.calculate_similarity(cellline_query, synonyms)
+
+            # Round similarity to handle floating-point precision
+            similarity_round = round(similarity, 3)
+
+            # Add to results if above threshold
+            if self.similarity_method == "cosine":
+                if similarity_round >= self.threshold:
+                    results.append((entry, similarity_round))
+            else:
+                results.append((entry, similarity_round))
+
+        # Sort results by similarity in descending order
+        sorted_results = sorted(results, key=lambda x: x[1], reverse=True)
+
+        # Prioritize exact matches (score 1.0)
+        top_results = [
+            result for result in sorted_results if result[1] > self.threshold
+        ]
+
+        # Add additional results if needed
+        top_results.extend(
+            [result for result in sorted_results if result[1] < self.threshold][
+                : self.top_results
+            ]
+        )
+
+        # Log matching results
+        self.logger.debug(
+            f"Matched '{cellline_query}' with {len(top_results)} results "
+            f"above threshold {self.threshold}"
+        )
+
+        return top_results[: self.top_results]
 
 @click.command()
 @click.option(
@@ -205,10 +325,17 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
                 .set_index("cell line")
                 .to_dict()["synonyms"]
             )
+            nlp_matcher = CellLineMatcher(similarity_method="cosine")
             for cell_line in unknown_cell_lines:
-                (match, score) = map_celllines(cell_line, cell_lines_db)
-                if match and score > 0.9:
-                    logging.info(f"Match found for cell line: {cell_line} - {match}")
+                matches_scores = nlp_matcher.map_celllines(cell_line, cell_lines_db)
+                # Remove mathces in dictionary with score less than 0.9
+                matches_scores = [
+                    (match, score) for match, score in matches_scores if score > 0.98
+                ]
+                if matches_scores:
+                    logging.warning(
+                        f"Match found for cell line: {cell_line} with {matches_scores}"
+                    )
                 else:
                     logging.warning(f"No match found for cell line: {cell_line}")
 
@@ -217,7 +344,6 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
         raise
-
 
 if __name__ == "__main__":
     annotate_sdrf()

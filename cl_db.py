@@ -9,6 +9,11 @@ import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 nlp = spacy.load("en_core_web_md")  # Load the spacy model
@@ -54,7 +59,7 @@ def get_cell_line_code(sdrf_file):
         cl_list = sdrf["characteristics[cell line]"].unique().tolist()
         return cl_list
     except KeyError:
-        print(
+        logging.error(
             "The SDRF file does not have a column named 'characteristics[cell line]' -- {}".format(
                 sdrf_file
             )
@@ -204,7 +209,7 @@ def validate_ages_as_sdrf(age_string: str) -> bool:
     match = re.match(pattern, age_string)
     if match:
         return True
-    print(f"Age {age_string} is not valid")
+    logging.debug(f"Age {age_string} is not valid")
 
     return False
 
@@ -533,7 +538,6 @@ def write_database(current_cl_database: list, database: str) -> None:
 
 
 @click.command(
-    "cl-database",
     short_help="Create a cell lines metadata database for annotating cell lines SDRFs",
 )
 @click.option(
@@ -569,7 +573,11 @@ def write_database(current_cl_database: list, database: str) -> None:
     required=False,
     type=click.Path(exists=True),
 )
-@click.option("--celllines-to-add", help="Cell lines to add", required=False)
+@click.option(
+    "--celllines-to-add",
+    help="Cell lines to add separated by ; (eg. 'Hela;KMRC-1')",
+    required=False,
+)
 @click.option(
     "--include-all-cellpassports",
     help="Include all cell passports cell lines",
@@ -585,6 +593,7 @@ def write_database(current_cl_database: list, database: str) -> None:
 @click.option(
     "--unknown", help="Output for unknown cell lines in cellosaurus", required=True
 )
+@click.option("--output-database", help="Output new database file", required=True)
 def cl_database(
     database: str,
     cellosaurus_database: str,
@@ -595,6 +604,7 @@ def cl_database(
     include_all_cellpassports: bool,
     ai_synonyms: str,
     unknown: str,
+    output_database: str,
 ) -> None:
     """
     Creates and updates a cell lines metadata database for annotating cell lines in SDRFs.
@@ -610,16 +620,17 @@ def cl_database(
         ea_database (str): Path to the EA Atlas database file.
         cell_passports_database (str): Path to the cell passports database file.
         sdrf_path (str): Path to the folder containing SDRF files.
+        celllines_to_add (str): List of cell lines to add, separated by semicolons.
         include_all_cellpassports (bool): Flag to include all cell passports cell lines.
         ai_synonyms (str): Path to the AI synonyms file.
         unknown (str): Path to the output file for unknown cell lines.
-
+        output_database (str): Path to the output database file.
     Returns:
         None
     """
 
     cls = []  # List of cell lines
-    if sdrf_path is None and not include_all_cellpassports:
+    if sdrf_path is None and celllines_to_add is None and not include_all_cellpassports:
         raise ValueError(
             "The cell lines that wants to be added search from existing SDRF must be provided"
         )
@@ -627,7 +638,12 @@ def cl_database(
         sdrf_files = glob.glob(sdrf_path + "/**/*.tsv", recursive=True)
         for sdrf_file in sdrf_files:
             cls += get_cell_line_code(sdrf_file)
-        print("Number of cell lines in the SDRF files: ", len(cls))
+        logging.debug("Number of cell lines in the SDRF files: {}".format(len(cls)))
+
+    if celllines_to_add is not None:
+        cls += celllines_to_add.split(";")
+        cls = [cl.strip() for cl in cls]
+        logging.debug("Number of cell lines to add: {}".format(len(cls)))
 
     # Read the current cell line database
     current_cl_database = read_cell_line_database(database)
@@ -659,7 +675,7 @@ def cl_database(
         cls += [value["cell line"] for key, value in cell_passports.items()]
 
     cls = list(set(cls))
-    print("Final number of cell lines to annotated -- {}".format(str(len(cls))))
+    logging.debug("Final number of cell lines to annotated -- {}".format(str(len(cls))))
 
     # Add the cell lines that are not in the current cell line database
     non_found_cl = []
@@ -793,27 +809,17 @@ def cl_database(
                     if new_cl_entry["cell line"] not in current_cl_database:
                         current_cl_database[new_cl_entry["cell line"]] = new_cl_entry
                     else:
-                        print(f"Cell line {cl} already in the database")
+                        logging.debug(f"Cell line {cl} already in the database")
                 else:
                     non_found_cl.append(cl)
         else:
-            print(f"Cell line {cl} already in the database")
+            logging.debug(f"Cell line {cl} already in the database")
 
-    write_database(current_cl_database, database)
+    write_database(current_cl_database, output_database)
     with open(unknown, "w") as file:
         for cl in non_found_cl:
             file.write(cl + "\n")
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
-def cli():
-    """
-    Main function to run the CLI
-    """
-    pass
-
-
-cli.add_command(cl_database)
-
 if __name__ == "__main__":
-    cli()
+    cl_database()
