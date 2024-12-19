@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the following metadata."
+title: "SDRF Cell Line Metadata Database"
+authors:
+  - family-names: "Yasset Perez-Riverol"
+    given-names: "Yasset Perez-Riverol"
+    orcid: "0000-0001-6579-6941"
+date-released: 2024-12-19
+version: "v1.0.0-alpha"
+doi: "10.5281/zenodo.14524549"
+url: "https://zenodo.org/record/14524549"
+license: "Apache-2.0"
