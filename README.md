@@ -119,9 +119,11 @@ python annotator.py --sdrf-file MSV000085836.sdrf.tsv --db-file cl-annotations-d
 - **Logging and Error Handling**: Warnings are logged for any unmatched cell lines, and errors are gracefully handled.
 - **TSV Output**: Annotates and outputs the results to a new TSV file, maintaining structured data for downstream analysis.
 
+---
+
 ## Requirements
 
-To use the scripts, ensure the following are installed:
+To use the scripts, ensure the following is installed:
 
 - **Python 3.x**
 - Required libraries:  
