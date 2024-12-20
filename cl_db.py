@@ -37,7 +37,7 @@ def string_if_not_empty(param: list) -> Union[None, str]:
             and x != None
         ]
         return "; ".join(l)
-    return "no available"
+    return "not available"
 
 
 def get_cell_line_code(sdrf_file):
@@ -227,25 +227,25 @@ def get_age_consensus(cell_passport_entry, cellosaurus_entry, ae_entry):
     if (
         cell_passport_entry is not None
         and "age" in cell_passport_entry
-        and cell_passport_entry["age"] != "no available"
+        and cell_passport_entry["age"] != "not available"
     ) and int(cell_passport_entry["age"]) > 0:
         return str(cell_passport_entry["age"]) + "Y"
     if (
         cellosaurus_entry is not None
         and "age" in cellosaurus_entry
-        and cellosaurus_entry["age"] != "no available"
+        and cellosaurus_entry["age"] != "not available"
     ):
         return cellosaurus_entry["age"]
     if (
         ae_entry is not None
         and "age" in ae_entry
-        and ae_entry["age"] != "no available"
+        and ae_entry["age"] != "not available"
         and ae_entry["age"] != "nan"
         and "available" not in ae_entry["age"]
     ):
         age = ae_entry["age"].upper().replace("YEAR", "").strip()
         return str(age) + "Y"
-    return "no available"
+    return "not available"
 
 
 def estimate_developmental_stage(age_string: str) -> str:
@@ -266,7 +266,7 @@ def estimate_developmental_stage(age_string: str) -> str:
             return "Adult"
         elif age >= 65:
             return "Elderly"
-    return "no available"
+    return "not available"
 
 
 def create_new_entry(
@@ -293,19 +293,19 @@ def create_new_entry(
     """
     # Create a new entry
     entry = {
-        "cell line": "no available",
-        "cellosaurus name": "no available",
-        "cellosaurus accession": "no available",
-        "bto cell line": "no available",
-        "organism": "no available",
-        "organism part": "no available",
-        "sampling site": ["no available", "no available"],
-        "age": "no available",
-        "developmental stage": "no available",
-        "sex": "no available",
-        "ancestry category": "no available",
-        "disease": ["no available", "no available"],
-        "cell type": "no available",
+        "cell line": "not available",
+        "cellosaurus name": "not available",
+        "cellosaurus accession": "not available",
+        "bto cell line": "not available",
+        "organism": "not available",
+        "organism part": "not available",
+        "sampling site": ["not available", "not available"],
+        "age": "not available",
+        "developmental stage": "not available",
+        "sex": "not available",
+        "ancestry category": "not available",
+        "disease": ["not available", "not available"],
+        "cell type": "not available",
         "Material type": "cell",
         "synonyms": [],
         "curated": "not curated",
@@ -328,8 +328,8 @@ def create_new_entry(
         if (
             cellosaurus_entry["organism"].lower()
             != cell_passport_entry["organism"].lower()
-            and cellosaurus_entry["organism"] != "no available"
-            and cell_passport_entry["organism"] != "no available"
+            and cellosaurus_entry["organism"] != "not available"
+            and cell_passport_entry["organism"] != "not available"
         ):
             raise ValueError(
                 f"Organism mismatch: {cellosaurus_entry['organism']} vs {cell_passport_entry['organism']}"
@@ -338,22 +338,22 @@ def create_new_entry(
             entry["organism"] = cell_passport_entry["organism"].capitalize()
     elif (
         cell_passport_entry is not None
-        and cell_passport_entry["organism"].lower() != "no available"
+        and cell_passport_entry["organism"].lower() != "not available"
     ):
         entry["organism"] = cell_passport_entry["organism"].capitalize()
     elif (
         cellosaurus_entry is not None
-        and cellosaurus_entry["organism"].lower() != "no available"
+        and cellosaurus_entry["organism"].lower() != "not available"
     ):
         entry["organism"] = cellosaurus_entry["organism"].capitalize()
     else:
-        entry["organism"] = "no available"
+        entry["organism"] = "not available"
 
     # Set the sampling site using the cell passport entry, cell
 
     if (
         cell_passport_entry is not None
-        and cell_passport_entry["sampling site"].lower() != "no available"
+        and cell_passport_entry["sampling site"].lower() != "not available"
         and cell_passport_entry["sampling site"].lower() != "unknown"
     ):
         entry["sampling site"][0] = (
@@ -361,7 +361,7 @@ def create_new_entry(
         )
     if (
         cellosaurus_entry is not None
-        and cellosaurus_entry["sampling site"].lower() != "no available"
+        and cellosaurus_entry["sampling site"].lower() != "not available"
         and cellosaurus_entry["sampling site"].lower() != "unknown"
     ):
         entry["sampling site"][1] = (
@@ -370,22 +370,22 @@ def create_new_entry(
 
     if (
         cell_passport_entry is not None
-        and cell_passport_entry["disease"].lower() != "no available"
+        and cell_passport_entry["disease"].lower() != "not available"
     ):
         entry["disease"][0] = cell_passport_entry["disease"].strip().capitalize()
     if (
         cellosaurus_entry is not None
-        and cellosaurus_entry["disease"].lower() != "no available"
+        and cellosaurus_entry["disease"].lower() != "not available"
     ):
         entry["disease"][1] = cellosaurus_entry["disease"].strip().capitalize()
 
     # Set organism part using the cell passport entry
     if (
         cell_passport_entry is not None
-        and cell_passport_entry["organism part"].lower() != "no available"
+        and cell_passport_entry["organism part"].lower() != "not available"
     ):
         entry["organism part"] = cell_passport_entry["organism part"]
-    elif ae_entry is not None and ae_entry["organism part"].lower() != "no available":
+    elif ae_entry is not None and ae_entry["organism part"].lower() != "not available":
         entry["organism part"] = ae_entry["organism part"].strip().capitalize()
 
     # Set the age using cell passports, cellosaurus, and ae entries
@@ -394,12 +394,12 @@ def create_new_entry(
     # Set sex using the cell passport entry
     if (
         cell_passport_entry is not None
-        and cell_passport_entry["sex"].lower() != "no available"
+        and cell_passport_entry["sex"].lower() != "not available"
     ):
         entry["sex"] = cell_passport_entry["sex"].capitalize()
     elif (
         cellosaurus_entry is not None
-        and cellosaurus_entry["sex"].lower() != "no available"
+        and cellosaurus_entry["sex"].lower() != "not available"
     ):
         entry["sex"] = cellosaurus_entry["sex"].capitalize()
     elif ae_entry is not None and "available" not in ae_entry["sex"].lower():
@@ -408,12 +408,12 @@ def create_new_entry(
     # Set ancestry category using the cell passport entry
     if (
         cellosaurus_entry is not None
-        and cellosaurus_entry["ancestry category"].lower() != "no available"
+        and cellosaurus_entry["ancestry category"].lower() != "not available"
     ):
         entry["ancestry category"] = cellosaurus_entry["ancestry category"]
     elif (
         cell_passport_entry is not None
-        and cell_passport_entry["ancestry category"].lower() != "no available"
+        and cell_passport_entry["ancestry category"].lower() != "not available"
     ):
         entry["ancestry category"] = cell_passport_entry["ancestry category"]
 
@@ -454,10 +454,10 @@ def create_new_entry(
         entry["developmental stage"] = cellosaurus_entry[
             "developmental stage"
         ].capitalize()
-    elif entry["age"] != "no available":
+    elif entry["age"] != "not available":
         entry["developmental stage"] = estimate_developmental_stage(entry["age"])
 
-    if entry == original or entry["organism"] == "no available":
+    if entry == original or entry["organism"] == "not available":
         return None
 
     entry["curated"] = "not curated"
@@ -479,12 +479,12 @@ def write_database(current_cl_database: list, database: str) -> None:
         list_values = [item for sublist in list_values for item in sublist]
         # remove duplicates
         list_values = list(set(list_values))
-        # remove the no available values from list
+        # remove the not available values from list
         list_values = [
-            value.capitalize() for value in list_values if value != "no available"
+            value.capitalize() for value in list_values if value != "not available"
         ]
         if not list_values:
-            return "no available"
+            return "not available"
         return "; ".join(list_values)
 
     with open(database, "w") as file:
@@ -511,29 +511,29 @@ def write_database(current_cl_database: list, database: str) -> None:
 
         for key, entry in current_cl_database.items():
             row = [
-                entry.get("cell line", "no available"),
-                entry.get("cellosaurus name", "no available"),
-                entry.get("cellosaurus accession", "no available"),
-                entry.get("bto cell line", "no available"),
-                entry.get("organism", "no available"),
-                entry.get("organism part", "no available"),
+                entry.get("cell line", "not available"),
+                entry.get("cellosaurus name", "not available"),
+                entry.get("cellosaurus accession", "not available"),
+                entry.get("bto cell line", "not available"),
+                entry.get("organism", "not available"),
+                entry.get("organism part", "not available"),
                 get_string_available(
-                    entry.get("sampling site", ["no available", "no available"])
+                    entry.get("sampling site", ["not available", "not available"])
                 ),
-                entry.get("age", "no available"),
-                entry.get("developmental stage", "no available"),
-                entry.get("sex", "no available"),
-                entry.get("ancestry category", "no available"),
+                entry.get("age", "not available"),
+                entry.get("developmental stage", "not available"),
+                entry.get("sex", "not available"),
+                entry.get("ancestry category", "not available"),
                 get_string_available(
-                    entry.get("disease", ["no available", "no available"])
+                    entry.get("disease", ["not available", "not available"])
                 ),
-                entry.get("cell type", "no available"),
-                entry.get("Material type", "no available"),
+                entry.get("cell type", "not available"),
+                entry.get("Material type", "not available"),
                 string_if_not_empty(entry.get("synonyms", [])),
                 entry.get("curated", "not curated"),
             ]
 
-            row = ["no available" if item is None else str(item) for item in row]
+            row = ["not available" if item is None else str(item) for item in row]
             file.write("\t".join(row) + "\n")
 
 

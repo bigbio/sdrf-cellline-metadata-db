@@ -57,13 +57,13 @@ def read_obo_file(file_path: str) -> Dict[str, dict]:
 
 def string_if_not_empty(param: List[Union[str, float]]) -> str:
     """
-    Returns a string if the list is not empty, otherwise returns 'no available'.
+    Returns a string if the list is not empty, otherwise returns 'not available'.
 
     Parameters:
         param (List[Union[str, float]]): List of strings or floats.
 
     Returns:
-        str: Concatenated string of list elements or 'no available'.
+        str: Concatenated string of list elements or 'not available'.
     """
     if param == "None":
         param = []
@@ -75,7 +75,7 @@ def string_if_not_empty(param: List[Union[str, float]]) -> str:
             or (not isinstance(x, float) and x is not None)
         ]
         return "; ".join(l)
-    return "no available"
+    return "not available"
 
 
 def write_database_cellosaurus(current_cl_database: List[dict], database: str) -> None:
@@ -104,7 +104,7 @@ def write_database_cellosaurus(current_cl_database: List[dict], database: str) -
     with open(database, "w") as file:
         file.write("\t".join(headers) + "\n")
         for entry in current_cl_database:
-            row = [entry.get(header, "no available") for header in headers[:-1]] + [
+            row = [entry.get(header, "not available") for header in headers[:-1]] + [
                 string_if_not_empty(entry.get("synonyms", []))
             ]
             file.write("\t".join(row) + "\n")
@@ -187,18 +187,18 @@ def parse_cellosaurus_file(
 
     def parse_entry(entry: str, bto: Dict[str, dict], cl_type: Dict[str, dict]) -> dict:
         data = {
-            "cellosaurus name": "no available",
-            "cellosaurus accession": "no available",
-            "bto cell line": "no available",
-            "efo": "no available",
-            "organism": "no available",
-            "age": "no available",
-            "developmental stage": "no available",
-            "sex": "no available",
-            "ancestry category": "no available",
-            "disease": "no available",
-            "cell type": "no available",
-            "sampling site": "no available",
+            "cellosaurus name": "not available",
+            "cellosaurus accession": "not available",
+            "bto cell line": "not available",
+            "efo": "not available",
+            "organism": "not available",
+            "age": "not available",
+            "developmental stage": "not available",
+            "sex": "not available",
+            "ancestry category": "not available",
+            "disease": "not available",
+            "cell type": "not available",
+            "sampling site": "not available",
             "synonyms": [],
         }
 
@@ -263,7 +263,7 @@ def create_new_entry_from_cellosaurus(cellosaurus: dict) -> dict:
         dict: New entry dictionary.
     """
     entry = {
-        "cellosaurus name": cellosaurus.get("cellosaurus name", "no available"),
+        "cellosaurus name": cellosaurus.get("cellosaurus name", "not available"),
         "bto cell line": cellosaurus.get("bto cell line"),
         "cellosaurus accession": cellosaurus.get("cellosaurus accession"),
         "organism": cellosaurus.get("organism"),

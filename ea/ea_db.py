@@ -25,7 +25,7 @@ def string_if_not_empty(param: list) -> Union[None, str]:
             and x is not None
         ]
         return "; ".join(filtered_elements)
-    return "no available"
+    return "not available"
 
 
 @click.command(

@@ -8,7 +8,7 @@ This script processes Cell Passport files to create a structured database of cel
 
 - **Filter by Cell Line**: Only processes entries where `model_type` is `Cell Line`.
 - **Field Mapping**: Maps raw column names to meaningful database fields.
-- **Data Cleaning**: Fills missing values with "no available" and formats age without decimals.
+- **Data Cleaning**: Fills missing values with "not available" and formats age without decimals.
 - **Flexible CLI**: Simple command-line interface to specify input and output files.
 
 --- 

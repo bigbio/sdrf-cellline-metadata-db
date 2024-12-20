@@ -61,7 +61,7 @@ A tab-separated values (TSV) file containing structured data with the following 
  # Parses OBO ontology files into a dictionary.
  read_obo_file(file_path: str) -> Dict[str, dict] 
  
- # Formats a list into a semicolon-separated string or returns "no available" if empty.  
+ # Formats a list into a semicolon-separated string or returns "not available" if empty.  
  string_if_not_empty(param: List[Union[str, float]]) -> str
  
  # Writes parsed Cellosaurus data into a TSV file.
