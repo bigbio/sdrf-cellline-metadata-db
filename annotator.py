@@ -176,7 +176,8 @@ class CellLineMatcher:
     type=click.Path(),
     help="Path to the output TSV file.",
 )
-def annotate_sdrf(sdrf_file, db_file, output_file):
+@click.option("--similarity-threshold", default=0.98, help="Similarity threshold for unknown cell lines.")
+def annotate_sdrf(sdrf_file, db_file, output_file, similarity_threshold: float):
     """
     Output the columns needed to annotate an SDRF file with cell line information from a database.
 
@@ -287,7 +288,7 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
                     {
                         "source name": source_name,
                         "characteristics[cell line]": cell_line_name,
-                        "cell line": "not available",
+                        "cell line": cell_line_name,
                         "cellosaurus name": "not available",
                         "cellosaurus accession": "not available",
                         "bto cell line": "not available",
@@ -325,12 +326,12 @@ def annotate_sdrf(sdrf_file, db_file, output_file):
                 .set_index("cell line")
                 .to_dict()["synonyms"]
             )
-            nlp_matcher = CellLineMatcher(similarity_method="cosine")
+            nlp_matcher = CellLineMatcher(similarity_method="cosine", threshold=similarity_threshold)
             for cell_line in unknown_cell_lines:
                 matches_scores = nlp_matcher.map_celllines(cell_line, cell_lines_db)
                 # Remove mathces in dictionary with score less than 0.9
                 matches_scores = [
-                    (match, score) for match, score in matches_scores if score > 0.98
+                    (match, score) for match, score in matches_scores if score > similarity_threshold
                 ]
                 if matches_scores:
                     logging.warning(

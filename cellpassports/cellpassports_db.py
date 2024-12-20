@@ -58,10 +58,10 @@ def cell_passports_to_database(cell_passports: str, output: str) -> None:
     ]
     # sublect columns
     cell_passports = cell_passports[columns]
-    cell_passports = cell_passports.fillna("no available")
+    cell_passports = cell_passports.fillna("not available")
     # convert age_at_sampling to no decimal places
     cell_passports["age_at_sampling"] = cell_passports["age_at_sampling"].apply(
-        lambda x: int(x) if x != "no available" else x
+        lambda x: int(x) if x != "not available" else x
     )
     # write pandas dataframe to file
 
