@@ -70,7 +70,7 @@ ONCO-DG-1	Homo sapiens	ovary	high grade ovarian serous adenocarcinoma	not availa
 MES-SA	Homo sapiens	soft tissue	uterine sarcoma	not available	not available	not available	not available	not available
 MEL-JUSO	Homo sapiens	skin	cutaneous melanoma	not available	not available	not available	not available	not available
 MEL-HO	Homo sapiens	skin	melanoma	not available	not available	female	not available	not available
-MEG-01	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+MEG-01	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 MFE-319	Homo sapiens	endometrium	endometrial adenosquamous carcinoma	not available	not available	not available	not available	not available
 MFE-296	Homo sapiens	endometrium	endometrium adenocarcinoma	not available	not available	not available	not available	not available
 MFE-280	Homo sapiens	endometrium	endometrium adenocarcinoma	not available	not available	not available	not available	not available
@@ -148,7 +148,7 @@ SNU-398	Homo sapiens	liver	hepatocellular carcinoma	not available	not available	
 SNU-387	Homo sapiens	liver	hepatocellular carcinoma	not available	not available	not available	not available	not available
 SNU-349	Homo sapiens	kidney	clear cell renal carcinoma	not available	not available	not available	not available	not available
 SNU-324	Homo sapiens	pancreas	pancreatic adenocarcinoma	not available	not available	not available	not available	not available
-NALM-1	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+NALM-1	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 CAL-54	Homo sapiens	kidney	renal cell adenocarcinoma	not available	not available	not available	not available	not available
 SNU-410	Homo sapiens	pancreas	pancreatic adenocarcinoma	not available	not available	not available	not available	not available
 SNU-407	Homo sapiens	large intestine	colon adenocarcinoma; colorectal adenocarcinoma	not available	not available	male	not available	not available
@@ -197,7 +197,7 @@ KASUMI-1	Homo sapiens	hematopoietic system and lymphoid system	childhood acute m
 KATO III	Homo sapiens	stomach	signet ring cell gastric adenocarcinoma; gastric carcinoma	not available	not available	not available	not available	not available
 Kasumi-6	Homo sapiens	hematopoietic system and lymphoid system	adult acute myeloid leukemia	not available	not available	not available	not available	not available
 KD [Human abdomen rhabdoid tumor]	Homo sapiens	soft tissue	malignant rhabdoid tumour	not available	not available	not available	not available	not available
-KCL-22	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+KCL-22	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 KE-39	Homo sapiens	stomach	gastric adenocarcinoma	not available	not available	not available	not available	not available
 KE-37	Homo sapiens	hematopoietic system and lymphoid system	adult T acute lymphoblastic leukemia	not available	not available	not available	not available	not available
 SU-DHL-5	Homo sapiens	hematopoietic system and lymphoid system	diffuse large B-cell lymphoma; diffuse large B cell lymphoma; B-cell lymphoma	17 year	not available	female	not available	not available
@@ -277,7 +277,7 @@ NMC-G1	Homo sapiens	central nervous system	astrocytoma	not available	not availab
 NOMO-1	Homo sapiens	hematopoietic system and lymphoid system	adult acute monocytic leukemia	not available	not available	not available	not available	not available
 NHAHTDD	Homo sapiens	central nervous system	normal cell line	not available	not available	not available	not available	not available
 OVCAR-3	Homo sapiens	ovary	high grade ovarian serous adenocarcinoma	not available	not available	not available	not available	not available
-NCO2	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+NCO2	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 NH-6	Homo sapiens	autonomic ganglion	adrenal gland neuroblastoma	not available	not available	not available	not available	not available
 SU-DHL-1	Homo sapiens	hematopoietic system and lymphoid system	anaplastic large cell lymphoma; non-Hodgkin's lymphoma	10 year	not available	male	not available	not available
 NUGC-2	Homo sapiens	stomach	gastric adenocarcinoma	56 year	not available	female	not available	not available
@@ -385,7 +385,7 @@ JHUEM-3	Homo sapiens	endometrium	endometrium adenocarcinoma	not available	not av
 JHUEM-2	Homo sapiens	endometrium	endometrium adenocarcinoma	not available	not available	not available	not available	not available
 JHUEM-1	Homo sapiens	endometrium	endometrium adenocarcinoma	not available	not available	not available	not available	not available
 JL-1	Homo sapiens	pleura	mesothelioma	54 year	not available	male	not available	not available
-JK-1	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+JK-1	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 JJN-3	Homo sapiens	hematopoietic system and lymphoid system	multiple myeloma; leukemia	not available	not available	not available	not available	not available
 JIMT-1	Homo sapiens	breast	breast carcinoma; breast ductal adenocarcinoma	62 year	not available	female	not available	not available
 JMSU-1	Homo sapiens	urinary tract	bladder carcinoma	not available	not available	not available	not available	not available
@@ -512,7 +512,7 @@ SK-CO-1	Homo sapiens	large intestine	colon adenocarcinoma	65 year	not available	
 SK-LMS-1	Homo sapiens	soft tissue	vulvar leiomyosarcoma	not available	not available	not available	not available	not available
 SK-HEP-1	Homo sapiens	liver	hepatocellular carcinoma	not available	not available	not available	not available	not available
 L-540	Homo sapiens	hematopoietic system and lymphoid system	Hodgkins lymphoma	not available	not available	not available	not available	not available
-LAMA-84	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive; chronic myelogenous leukemia	not available	not available	female	not available	not available
+LAMA-84	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive; chronic myelogenous leukemia	not available	not available	female	not available	not available
 PANC-1	Homo sapiens	pancreas	pancreatic ductal adenocarcinoma; pancreatic adenocarcinoma	56 year	not available	male	not available	not available
 MUTZ-5	Homo sapiens	hematopoietic system and lymphoid system	B-cell acute lymphoblastic leukemia	not available	not available	not available	not available	not available
 MV-4-11	Homo sapiens	hematopoietic system and lymphoid system	childhood acute monocytic leukemia; acute myeloid leukemia	10 year	not available	male	not available	not available
@@ -540,11 +540,11 @@ KNS-62	Homo sapiens	lung	squamous cell lung carcinoma; non-small cell lung carci
 JVM-2	Homo sapiens	hematopoietic system and lymphoid system	Mantle cell lymphoma	not available	not available	not available	not available	not available
 JVM-3	Homo sapiens	hematopoietic system and lymphoid system	B-cell prolymphocytic leukemia	not available	not available	not available	not available	not available
 JURKAT	Homo sapiens	hematopoietic system and lymphoid system	childhood T acute lymphoblastic leukemia	not available	not available	not available	not available	not available
-JURL-MK1	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+JURL-MK1	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 KALS-1	Homo sapiens	central nervous system	glioblastoma	not available	not available	not available	not available	not available
 KARPAS-299	Homo sapiens	hematopoietic system and lymphoid system	anaplastic large cell lymphoma	not available	not available	not available	not available	not available
 K029AX	Homo sapiens	skin	cutaneous melanoma	not available	not available	not available	not available	not available
-K-562	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive; chronic myelogenic leukemia	not available	not available	not available	not available	not available
+K-562	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive; chronic myelogenic leukemia	not available	not available	not available	not available	not available
 RH-18	Homo sapiens	soft tissue	alveolar rhabdomyosarcoma	not available	not available	not available	not available	not available
 LCLC-97TM1	Homo sapiens	lung	large cell lung carcinoma	44 year	not available	male	not available	not available
 TUHR14TKB	Homo sapiens	kidney	renal cell carcinoma	not available	not available	not available	not available	not available
@@ -882,7 +882,7 @@ SW480	Homo sapiens	large intestine; colon	colon adenocarcinoma	50	adult	male	not
 MOLT-16	Homo sapiens	hematopoietic system and lymphoid system	childhood T acute lymphoblastic leukemia	not available	not available	not available	not available	not available
 MOLT-13	Homo sapiens	hematopoietic system and lymphoid system	childhood T acute lymphoblastic leukemia	not available	not available	not available	not available	not available
 NCI-H1623	Homo sapiens	lung	lung adenocarcinoma; non-small cell lung carcinoma	58 year	not available	male	not available	not available
-MOLM-6	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive	not available	not available	not available	not available	not available
+MOLM-6	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive	not available	not available	not available	not available	not available
 MOLM-16	Homo sapiens	hematopoietic system and lymphoid system	adult acute myeloid leukemia; acute myeloid leukemia	not available	not available	female	not available	not available
 MOLP-8	Homo sapiens	hematopoietic system and lymphoid system	multiple myeloma	52 year	not available	male	not available	not available
 MOLP-2	Homo sapiens	hematopoietic system and lymphoid system	multiple myeloma	55 year	not available	male	not available	not available
@@ -899,7 +899,7 @@ KPL-1	Homo sapiens	breast; mammary gland	invasive ductal carcinoma; breast ducta
 KP-MRT-RY	Homo sapiens	soft tissue	rhabdoid tumor of the kidney	not available	not available	not available	not available	not available
 KP-N-RT-BM-1	Homo sapiens	autonomic ganglion	neuroblastoma	not available	not available	not available	not available	not available
 ChaGo-K-1	Homo sapiens	lung	bronchogenic carcinoma; lung carcinoma	45 year	not available	male	not available	not available
-KU812	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia, BCR-ABL1 positive; chronic myelogenous leukemia	not available	not available	male; not available	not available	not available
+KU812	Homo sapiens	hematopoietic system and lymphoid system	blast phase chronic myelogenous leukemia,bcr-abl1 positive; chronic myelogenous leukemia	not available	not available	male; not available	not available	not available
 KURAMOCHI	Homo sapiens	ovary	high grade ovarian serous adenocarcinoma; ovarian carcinoma	not available	adult	not available; female	not available	not available
 CH-157MN	Homo sapiens	central nervous system	meningioma	not available	not available	not available	not available	not available
 CHP-212	Homo sapiens	autonomic ganglion	neuroblastoma	not available	not available	not available	not available	not available
